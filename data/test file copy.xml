@@ -1,0 +1,25 @@
+<Members>
+</Member>
+    <Member_Id>4382</Member_Id>
+    <Dods_Id>35946</Dods_Id>
+    <Pims_Id>6025</Pims_Id>
+    <Clerks_Id>1434</Clerks_Id>
+    <DisplayAs>Daniel Zeichner</DisplayAs>
+    <ListAs>Zeichner, Daniel</ListAs>
+    <FullTitle>Daniel Zeichner MP</FullTitle>
+    <LayingMinisterName/>
+    <DateOfBirth>1956-11-09T00:00:00</DateOfBirth>
+    <DateOfDeath xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+    <Gender>M</Gender>
+    <Party Id="15">Labour</Party>
+    <House>Commons</House>
+    <MemberFrom>Cambridge</MemberFrom>
+    <HouseStartDate>2015-05-07T00:00:00</HouseStartDate>
+    <HouseEndDate xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:nil="true"/>
+    <CurrentStatus Id="0" IsActive="True">
+      <Name>Current Member</Name>
+      <Reason/>
+      <StartDate>2019-12-12T00:00:00</StartDate>
+    </CurrentStatus>
+  </Member>
+</Members>
