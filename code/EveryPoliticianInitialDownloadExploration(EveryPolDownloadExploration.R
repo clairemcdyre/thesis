@@ -22,6 +22,7 @@ library(lattice)
 library(XML)
 library(methods)
 library(openxlsx)
+library(xlsx)
 
 
 ##attempt 1 from http://everypolitician.org/uk/
@@ -104,7 +105,7 @@ colSums(is.na(posts_df))#many NAs end_date, 18 NAs start_date
 
 anyDuplicated(persons_df$id)
 
-#ATTEMPT #3 http://data.parliament.uk/membersdataplatform/memberquery.aspx | http://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7CMembership=all/
+#ATTEMPT #3 | http://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7CMembership=all/
 
 # Give the input file name to the function.
 doc <- xmlParse(file = "data/houseofcommons_members.xml")
@@ -121,13 +122,40 @@ subn=xmlChildren(child)
 print(root)
 #Attempt 4 (after saving the xml to Excel) import excel into R as dataframe....3 days later!! 
 
-df <- read.xlsx("data/House Of Commons Members.xlsx")
+#df <- read.xlsx("data/House Of Commons Members.xlsx", detectDates = TRUE) -- fail doesn't read dates
+commons_df <- read.csv("data/House Of Commons Members.csv", na.strings=c("","NA")) #works!
 
-head(df)
-str(df)
-dim(df)
-summary(df)
+#initial inspection of the data frame
+head(commons_df)
+str(commons_df)
+dim(commons_df)
+summary(commons_df)
+colSums(is.na(commons_df))#Find missing values
+anyDuplicated(df$Member_Id)# verify if member_id can be used as the unique identifier for a MP
 
+## First Draft Prep
+### Keep columns: member_id, dods_id, pims_id, displayAs, ListAs, FullTitle, DOB, Gender, Party, ID (party_id),house, MemberFrom, HouseStartDate, HouseEndDate
+### Remove columns: Clerks_Id, LayingMinisterName, DateOfDeath, Id2, IsActive, Name, Reason, StartDate
+### Rename columns: Id to Party_Id
+### Remove rows where house == Lords
+### Convert categorical columns to factors
 
-colSums(is.na(df))
-anyDuplicated(df$Member_Id)
+commons_df <- subset(commons_df, select = -c(Clerks_Id, LayingMinisterName, DateOfDeath, Id2, IsActive, Name, Reason, StartDate))
+commons_df<- subset(commons_df, House == "Commons")
+colnames(commons_df)[10] <-  "Party_Id"
+
+commons_df$Party <- as.factor(commons_df$Party)
+commons_df$Gender <- as.factor(commons_df$Gender)
+commons_df$MemberFrom <- as.factor(commons_df$MemberFrom)
+
+levels(commons_df$Party)
+levels(commons_df$Gender)
+levels(commons_df$MemberFrom)
+
+table(commons_df$Party)   
+
+## Second Prep: Clean Up Member Names -- leaving as is. looks like it doesn't recognise fadas but the number of errors seems low so leaving for now.
+
+                      
+                      
+                      
