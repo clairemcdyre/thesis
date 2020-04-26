@@ -1,0 +1,22 @@
+
+#some test queries to return the count of speeches with keywords identified 
+db.speeches.count({speech:{$in:[/.*Northern Ireland.*/]}}) ## Post 1979 dataset = 58,496 speeches, Pre 1979 dataset = 
+
+db.speeches.count({speech:{$in:[/.*Northern Ireland.*/./.*Ulster.*/]}})## Post 1979 dataset = 60,509 speeches, Pre 1979 dataset = 
+
+
+db.speeches.count({speech:{$in:[/.*Northern Ireland.*/,/.*Ulster.*/,/.*Belfast.*/,/.*Derry.*/,/.*Londonderry.*/,/.*Stormont.*/,/.*IRA.*/,/.*Irish Republican Army.*/,/.*Provisional IRA.*/,/.*Official IRA.*/,/.*Real IRA.*/,/.*UDA.*/,/.*Ulster Defence Association.*/,/.*UVF.*/,/.*Ulster Volunteer Force.*/,/.*Sinn Féin.*/,/.*DUP.*/,/.*Democratic Unionistic Party.*/,/.*UUP.*/,/.*Ulster Unionist Party.*/,/.*SDLP.*/,/.*Social Democratic and Labour Party.*/,/.*RUC.*/,/.*Royal Ulster Constabulary.*/,/.*UDR.*/,/.*Ulster Defence Regiment.*/,/.*Royal Irish Regiment.*/,/.*Good Friday Agreement.*/,/.*Sunningdale Agreement.*/,/.*Anglo Irish Agreement.*/,/.*Downing Street Declaration.*/]}})## Post 1979 dataset = 58,496 speeches, Pre 1979 dataset = 68354
+
+#creating subset - test #1
+ db.speeches.aggregate([{$match:{speech: /Northern Ireland/}},{ $out:"test"}] )
+
+
+#creating subset - test #2 all 
+
+db.speeches.aggregate([{$match:{speech:{$in:[/Northern Ireland/,/Ulster/,/Belfast/,/Derry/,/Londonderry/,/Stormont/,/IRA/,/Irish Republican Army/,/Provisional IRA/,/Official IRA/,/Real IRA/,/UDA/,/Ulster Defence Association/,/UVF/,/Ulster Volunteer Force/,/Sinn Féin/,/DUP/,/Democratic Unionistic Party/,/UUP/,/Ulster Unionist Party/,/SDLP/,/Social Democratic and Labour Party/,/RUC/,/Royal Ulster Constabulary/,/UDR/,/Ulster Defence Regiment/,/Royal Irish Regiment/,/Good Friday Agreement/,/Sunningdale Agreement/,/Anglo Irish Agreement/,/Downing Street Declaration/]}}},{$out:"NISpeeches_Post1979"}])
+
+db.speeches.aggregate([{$match:{speech:{$in:[/Northern Ireland/,/Ulster/,/Belfast/,/Derry/,/Londonderry/,/Stormont/,/IRA/,/Irish Republican Army/,/Provisional IRA/,/Official IRA/,/Real IRA/,/UDA/,/Ulster Defence Association/,/UVF/,/Ulster Volunteer Force/,/Sinn Féin/,/DUP/,/Democratic Unionistic Party/,/UUP/,/Ulster Unionist Party/,/SDLP/,/Social Democratic and Labour Party/,/RUC/,/Royal Ulster Constabulary/,/UDR/,/Ulster Defence Regiment/,/Royal Irish Regiment/,/Good Friday Agreement/,/Sunningdale Agreement/,/Anglo Irish Agreement/,/Downing Street Declaration/]}}},{$out:"NISpeeches_Pre1979"}])
+
+#export to son
+./mongoexport --db Hansard_Post1979 --collection NISpeeches_Post1979 --out NISpeeches_Post1979.json
+./mongoexport --db Hansard_Pre1979 --collection NISpeeches_Pre1979 --out NISpeeches_Pre1979.json
