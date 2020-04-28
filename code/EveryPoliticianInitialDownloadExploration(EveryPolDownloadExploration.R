@@ -23,6 +23,7 @@ library(XML)
 library(methods)
 library(openxlsx)
 library(xlsx)
+library(lubridate)
 
 
 # ##attempt 1 from http://everypolitician.org/uk/
@@ -218,7 +219,7 @@ head(post79_df)
 ### 3. Merge Pre79_df and Post79_df
 
 speeches_df <- rbind(pre79_df,post79_df)
-head(speeches_df)
+head(speeches_df,-10)
 str(speeches_df)
 dim(speeches_df)
 summary(speeches_df)
@@ -231,3 +232,19 @@ speeches_df$as_speaker <- as.factor(speeches_df$as_speaker)
 speeches_df$ministry <- as.factor(speeches_df$ministry)
 speeches_df$government <- as.factor(speeches_df$government)
 speeches_df$year<- as.factor(speeches_df$year)
+
+
+
+
+## create year columns      
+speeches_df = speeches_df %>% 
+        mutate(date = ymd(speech_date)) %>% 
+        mutate_at(vars(speech_date), funs(year, month, day))
+
+table(speeches_df$year) 
+speeches_df$year<- as.factor(speeches_df$year)
+levels(speeches_df$year)
+
+##Remove some unwanted columns - day, month, date, url, colnum
+colnames(speeches_df)
+speeches_df <- subset(speeches_df, select = c("_id", "id", "speech", "hansard_membership_id", "speech_date", "year", "speakerid", "person_id", "speakername", "time", "mnis_id", "age", "as_speaker", "party_group", "ministry", "government", "proper_name", "house_start_date", "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id", "afinn_sentiment", "afinn_sd", "jockers_sentiment", "jockers_sd", "nrc_sentiment", "nrc_sd", "sentiword_sentiment", "sentiword_sd", "hu_sentiment", "hu_sd", "word_count"))
