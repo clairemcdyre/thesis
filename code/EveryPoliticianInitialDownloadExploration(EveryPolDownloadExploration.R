@@ -25,103 +25,104 @@ library(openxlsx)
 library(xlsx)
 
 
-##attempt 1 from http://everypolitician.org/uk/
+# ##attempt 1 from http://everypolitician.org/uk/
+# 
+# #get politician info for the UK House of Commons. Data type = Large List
+# house_of_commons = everypolitician("United Kingdom")
+# 
+# #accessing elements in the list and assigning to dataframe
+# persons = as.data.frame(house_of_commons$persons[4:7])
+# organisations = as.data.frame(house_of_commons$organizations[2])
+# memberships = as.data.frame(house_of_commons$memberships[1:10])
+# areas = as.data.frame(house_of_commons$areas[1:3])
+# areas$identifiers <- NULL #get rid of identifier column
+# periods = as.data.frame(house_of_commons$periods)
+# 
+# # Observations # 
+# ##dataframes that are useful for my analysi: Persons, Memberships, Areas
+# ## persons can have > 1 memberships
+# ## the three dataframes need to be merged.
+# 
+# 
+# ## renaming some id columns for consistency
+# names(persons) <- c("family_name", "gender", "given_name", "person_id")
+# names(persons)
+# 
+# names(areas) <- c("area_id", "area_name")
+# names(areas)
+# 
+# ## merge three dataframes
+# politician_datatemp <- merge(persons, memberships, by = "person_id")
+# politician_data <- merge(politician_datatemp, areas, by = "area_id")
+# 
+# ##attempt 2 from https://github.com/mysociety/parlparse/blob/master/members/people.json
+# people <- fromJSON("data/people.json")
+# #explore structure of people json
+# names(people)
+# names(people$memberships)
+# names(people$organizations)
+# names(people$persons)
+# names(people$posts)
+# 
+# head(people$memberships, 10)
+# head(people$organizations, 10)
+# head(people$persons, 10)
+# head(people$posts, 10)
+# 
+# memberships_df <- as.data.frame(people$memberships)
+# organizations_df <- as.data.frame(people$organizations)
+# persons_df <- as.data.frame(people$persons)
+# posts_df <- as.data.frame(people$posts)
+# 
+# str(memberships_df)
+# head(memberships_df)
+# dim(memberships_df)
+# summary(memberships_df)
+# sum(is.na(memberships_df))
+# 
+# str(organizations_df)
+# head(organizations_df)
+# dim(organizations_df)
+# summary(organizations_df)
+# 
+# str(persons_df)
+# head(persons_df)
+# dim(persons_df)
+# summary(persons_df)
+# head(persons_df$other_names)
+# 
+# str(posts_df)
+# head(posts_df)
+# dim(posts_df)
+# summary(posts_df)
+# head(posts_df$identifiers)
+# 
+# colSums(is.na(memberships_df))#many NAs
+# colSums(is.na(organizations_df))#1 NA
+# colSums(is.na(persons_df))#many NAs current_constituency, current_party, redirect
+# colSums(is.na(posts_df))#many NAs end_date, 18 NAs start_date
+# 
+# 
+# anyDuplicated(persons_df$id)
+# 
+# #ATTEMPT #3 | http://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7CMembership=all/
+# 
+# # Give the input file name to the function.
+# doc <- xmlParse(file = "data/houseofcommons_members.xml")
+# print(doc,1)
+# class(doc)
+# 
+# doc2 <- xmlTreeParse(file = "data/houseofcommons_members.xml")
+# print(doc2,1)
+# class(doc2)
+# 
+# root = xmlRoot(doc2)
+# child = xmlChildren(root)
+# subn=xmlChildren(child)
+# print(root)
+# #Attempt 4 (after saving the xml to Excel) import excel into R as dataframe....3 days later!! 
 
-#get politician info for the UK House of Commons. Data type = Large List
-house_of_commons = everypolitician("United Kingdom")
-
-#accessing elements in the list and assigning to dataframe
-persons = as.data.frame(house_of_commons$persons[4:7])
-organisations = as.data.frame(house_of_commons$organizations[2])
-memberships = as.data.frame(house_of_commons$memberships[1:10])
-areas = as.data.frame(house_of_commons$areas[1:3])
-areas$identifiers <- NULL #get rid of identifier column
-periods = as.data.frame(house_of_commons$periods)
-
-# Observations # 
-##dataframes that are useful for my analysi: Persons, Memberships, Areas
-## persons can have > 1 memberships
-## the three dataframes need to be merged.
-
-
-## renaming some id columns for consistency
-names(persons) <- c("family_name", "gender", "given_name", "person_id")
-names(persons)
-
-names(areas) <- c("area_id", "area_name")
-names(areas)
-
-## merge three dataframes
-politician_datatemp <- merge(persons, memberships, by = "person_id")
-politician_data <- merge(politician_datatemp, areas, by = "area_id")
-
-##attempt 2 from https://github.com/mysociety/parlparse/blob/master/members/people.json
-people <- fromJSON("data/people.json")
-#explore structure of people json
-names(people)
-names(people$memberships)
-names(people$organizations)
-names(people$persons)
-names(people$posts)
-
-head(people$memberships, 10)
-head(people$organizations, 10)
-head(people$persons, 10)
-head(people$posts, 10)
-
-memberships_df <- as.data.frame(people$memberships)
-organizations_df <- as.data.frame(people$organizations)
-persons_df <- as.data.frame(people$persons)
-posts_df <- as.data.frame(people$posts)
-
-str(memberships_df)
-head(memberships_df)
-dim(memberships_df)
-summary(memberships_df)
-sum(is.na(memberships_df))
-
-str(organizations_df)
-head(organizations_df)
-dim(organizations_df)
-summary(organizations_df)
-
-str(persons_df)
-head(persons_df)
-dim(persons_df)
-summary(persons_df)
-head(persons_df$other_names)
-
-str(posts_df)
-head(posts_df)
-dim(posts_df)
-summary(posts_df)
-head(posts_df$identifiers)
-
-colSums(is.na(memberships_df))#many NAs
-colSums(is.na(organizations_df))#1 NA
-colSums(is.na(persons_df))#many NAs current_constituency, current_party, redirect
-colSums(is.na(posts_df))#many NAs end_date, 18 NAs start_date
-
-
-anyDuplicated(persons_df$id)
-
-#ATTEMPT #3 | http://data.parliament.uk/membersdataplatform/services/mnis/members/query/House=Commons%7CMembership=all/
-
-# Give the input file name to the function.
-doc <- xmlParse(file = "data/houseofcommons_members.xml")
-print(doc,1)
-class(doc)
-
-doc2 <- xmlTreeParse(file = "data/houseofcommons_members.xml")
-print(doc2,1)
-class(doc2)
-
-root = xmlRoot(doc2)
-child = xmlChildren(root)
-subn=xmlChildren(child)
-print(root)
-#Attempt 4 (after saving the xml to Excel) import excel into R as dataframe....3 days later!! 
-
+# Part 1: Members dataset
 #df <- read.xlsx("data/House Of Commons Members.xlsx", detectDates = TRUE) -- fail doesn't read dates
 commons_df <- read.csv("data/House Of Commons Members.csv", na.strings=c("","NA")) #works!
 
@@ -131,7 +132,7 @@ str(commons_df)
 dim(commons_df)
 summary(commons_df)
 colSums(is.na(commons_df))#Find missing values
-anyDuplicated(df$Member_Id)# verify if member_id can be used as the unique identifier for a MP
+anyDuplicated(commons_df$Member_Id)# verify if member_id can be used as the unique identifier for a MP
 
 ## First Draft Prep
 ### Keep columns: member_id, dods_id, pims_id, displayAs, ListAs, FullTitle, DOB, Gender, Party, ID (party_id),house, MemberFrom, HouseStartDate, HouseEndDate
@@ -155,7 +156,9 @@ levels(commons_df$MemberFrom)
 table(commons_df$Party)   
 
 ## Second Prep: Clean Up Member Names -- leaving as is. looks like it doesn't recognise fadas but the number of errors seems low so leaving for now.
-###pre 1979 speeche dataset
+
+## Part 2: Speeches dataset for Mongodb
+###pre 1979 speeches dataset
 pre79_out <- lapply(readLines("data/NISpeeches_Pre1979.json"), fromJSON)#works
 pre79_df <- data.frame(matrix(unlist(pre79_out), nrow=39347, byrow=T),stringsAsFactors=FALSE, header = TRUE) 
 
@@ -172,4 +175,59 @@ head(post79_df)
 str(post79_df)
 dim(post79_df)
 summary(post79_df)
-                      
+
+## Speeches data prep and cleaning
+### Add column names 
+
+colnames(pre79_df) <- c("_id","speech", "id","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","url","as_speaker","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")
+
+colnames(post79_df) <- c("_id", "id","speech", "afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count","speech_date","time","url","as_speaker","speakerid","person_id","hansard_membership_id","mnis_id","age","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id")
+
+## List of columns varies between Pre79_df and Post79_df:
+### 1. Adding additional columns to each so that they can be merged
+
+#### Pre79_df
+
+extraCols_pre79_df <- data.frame(matrix(ncol = 13, nrow = 39347))
+pre79names <- c("mnis_id", "age","party_group", "ministry", "government","proper_name","house_start_date", "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id")
+colnames(extraCols_pre79_df) <- pre79names
+
+head(extraCols_pre79_df)
+
+pre79_df <- cbind(pre79_df,extraCols_pre79_df)
+head(pre79_df)
+
+#### Post79_df
+
+extraCols_post79_df <- data.frame(matrix(ncol = 3, nrow = 68354))
+post79names <- c("year", "speakername","colnum")
+colnames(extraCols_post79_df) <- post79names
+
+head(extraCols_post79_df)
+
+post79_df <- cbind(post79_df,extraCols_post79_df)
+head(post79_df)
+
+### 2. Rearranging the columns so that the two dataframes so that the two can be merged into one dataframe
+pre79_df <- pre79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
+head(pre79_df)
+
+post79_df <- post79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
+head(post79_df)
+
+### 3. Merge Pre79_df and Post79_df
+
+speeches_df <- rbind(pre79_df,post79_df)
+head(speeches_df)
+str(speeches_df)
+dim(speeches_df)
+summary(speeches_df)
+
+#### More cleaning
+speeches_df$gender <- as.factor(speeches_df$gender)
+speeches_df$party <- as.factor(speeches_df$party)
+speeches_df$party_group <- as.factor(speeches_df$party_group)
+speeches_df$as_speaker <- as.factor(speeches_df$as_speaker)
+speeches_df$ministry <- as.factor(speeches_df$ministry)
+speeches_df$government <- as.factor(speeches_df$government)
+speeches_df$year<- as.factor(speeches_df$year)
