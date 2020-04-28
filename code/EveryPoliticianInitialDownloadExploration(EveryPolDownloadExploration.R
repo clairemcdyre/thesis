@@ -155,7 +155,21 @@ levels(commons_df$MemberFrom)
 table(commons_df$Party)   
 
 ## Second Prep: Clean Up Member Names -- leaving as is. looks like it doesn't recognise fadas but the number of errors seems low so leaving for now.
+###pre 1979 speeche dataset
+pre79_out <- lapply(readLines("data/NISpeeches_Pre1979.json"), fromJSON)#works
+pre79_df <- data.frame(matrix(unlist(pre79_out), nrow=39347, byrow=T),stringsAsFactors=FALSE, header = TRUE) 
 
-                      
-                      
+head(pre79_df)
+str(pre79_df)
+dim(pre79_df)
+summary(pre79_df)
+
+###post 1979 speeche dataset
+post79_out <- lapply(readLines("data/NISpeeches_Post1979_6.json"), fromJSON)#works
+post79_df <- data.frame(matrix(unlist(post79_out), nrow=68354, byrow=T),stringsAsFactors=FALSE, header = TRUE) 
+
+head(post79_df)
+str(post79_df)
+dim(post79_df)
+summary(post79_df)
                       
