@@ -24,6 +24,7 @@ library(methods)
 library(openxlsx)
 library(xlsx)
 library(lubridate)
+library(dplyr)
 
 
 # ##attempt 1 from http://everypolitician.org/uk/
@@ -136,7 +137,8 @@ colSums(is.na(commons_df))#Find missing values
 anyDuplicated(commons_df$Member_Id)# verify if member_id can be used as the unique identifier for a MP
 
 ## First Draft Prep
-### Keep columns: member_id, dods_id, pims_id, displayAs, ListAs, FullTitle, DOB, Gender, Party, ID (party_id),house, MemberFrom, HouseStartDate, HouseEndDate
+### Keep columns: member_id, dods_id, pims_id, displayAs, ListAs, FullTitle, DOB, Gender, Party, ID (party_id),house, 
+### MemberFrom, HouseStartDate, HouseEndDate
 ### Remove columns: Clerks_Id, LayingMinisterName, DateOfDeath, Id2, IsActive, Name, Reason, StartDate
 ### Rename columns: Id to Party_Id
 ### Remove rows where house == Lords
@@ -156,7 +158,8 @@ levels(commons_df$MemberFrom)
 
 table(commons_df$Party)   
 
-## Second Prep: Clean Up Member Names -- leaving as is. looks like it doesn't recognise fadas but the number of errors seems low so leaving for now.
+## Second Prep: Clean Up Member Names -- leaving as is. 
+## looks like it doesn't recognise fadas but the number of errors seems low so leaving for now.
 
 ## Part 2: Speeches dataset for Mongodb
 ###pre 1979 speeches dataset
@@ -180,9 +183,15 @@ summary(post79_df)
 ## Speeches data prep and cleaning
 ### Add column names 
 
-colnames(pre79_df) <- c("_id","speech", "id","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","url","as_speaker","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")
+colnames(pre79_df) <- c("_id","speech", "id","hansard_membership_id","speech_date","year","speakerid","person_id",
+                        "speakername","colnum","time","url","as_speaker","afinn_sentiment","afinn_sd","jockers_sentiment",
+                        "jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")
 
-colnames(post79_df) <- c("_id", "id","speech", "afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count","speech_date","time","url","as_speaker","speakerid","person_id","hansard_membership_id","mnis_id","age","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id")
+colnames(post79_df) <- c("_id", "id","speech", "afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
+                         "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count",
+                         "speech_date","time","url","as_speaker","speakerid","person_id","hansard_membership_id","mnis_id","age",
+                         "party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date",
+                         "gender","party","dods_id","pims_id")
 
 ## List of columns varies between Pre79_df and Post79_df:
 ### 1. Adding additional columns to each so that they can be merged
@@ -190,7 +199,8 @@ colnames(post79_df) <- c("_id", "id","speech", "afinn_sentiment","afinn_sd","joc
 #### Pre79_df
 
 extraCols_pre79_df <- data.frame(matrix(ncol = 13, nrow = 39347))
-pre79names <- c("mnis_id", "age","party_group", "ministry", "government","proper_name","house_start_date", "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id")
+pre79names <- c("mnis_id", "age","party_group", "ministry", "government","proper_name","house_start_date", 
+                "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id")
 colnames(extraCols_pre79_df) <- pre79names
 
 head(extraCols_pre79_df)
@@ -210,10 +220,18 @@ post79_df <- cbind(post79_df,extraCols_post79_df)
 head(post79_df)
 
 ### 2. Rearranging the columns so that the two dataframes so that the two can be merged into one dataframe
-pre79_df <- pre79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
+pre79_df <- pre79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id",
+                       "speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry",
+                       "government","proper_name","house_start_date","date_of_birth","house_end_date","gender",
+                       "party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
+                       "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
 head(pre79_df)
 
-post79_df <- post79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id","speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry","government","proper_name","house_start_date","date_of_birth","house_end_date","gender","party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
+post79_df <- post79_df[c("_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id",
+                         "speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry",
+                         "government","proper_name","house_start_date","date_of_birth","house_end_date","gender",
+                         "party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
+                         "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
 head(post79_df)
 
 ### 3. Merge Pre79_df and Post79_df
@@ -234,8 +252,6 @@ speeches_df$government <- as.factor(speeches_df$government)
 speeches_df$year<- as.factor(speeches_df$year)
 
 
-
-
 ## create year columns      
 speeches_df = speeches_df %>% 
         mutate(date = ymd(speech_date)) %>% 
@@ -247,4 +263,44 @@ levels(speeches_df$year)
 
 ##Remove some unwanted columns - day, month, date, url, colnum
 colnames(speeches_df)
-speeches_df <- subset(speeches_df, select = c("_id", "id", "speech", "hansard_membership_id", "speech_date", "year", "speakerid", "person_id", "speakername", "time", "mnis_id", "age", "as_speaker", "party_group", "ministry", "government", "proper_name", "house_start_date", "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id", "afinn_sentiment", "afinn_sd", "jockers_sentiment", "jockers_sd", "nrc_sentiment", "nrc_sd", "sentiword_sentiment", "sentiword_sd", "hu_sentiment", "hu_sd", "word_count"))
+speeches_df <- subset(speeches_df, select = c("_id", "id", "speech", "hansard_membership_id", "speech_date", 
+                                              "year", "speakerid", "person_id", "speakername", "time", "mnis_id", 
+                                              "age", "as_speaker", "party_group", "ministry", "government", "proper_name", 
+                                              "house_start_date", "date_of_birth", "house_end_date", "gender", "party", 
+                                              "dods_id", "pims_id", "afinn_sentiment", "afinn_sd", "jockers_sentiment", "jockers_sd", 
+                                              "nrc_sentiment", "nrc_sd", "sentiword_sentiment", "sentiword_sd", "hu_sentiment", 
+                                              "hu_sd", "word_count"))
+
+## Deal with NAs
+###characters are not showing as NAs - think about shortening this code - function? lapply?
+speeches_df <- speeches_df %>% mutate_all(na_if,"NA")
+colSums(is.na(speeches_df))
+
+### important column with many NAs that need to be replaced are: Person_id, Speakername, party_group, party, ministry, government, proper_name, 
+### house_start_date, house_end_date, gender (these are speeches from the pre1979 dataset)
+
+## More analysis - removing some columns for faster filtering and analsysing on how to handle missing values. 
+
+speeches_df_2 <- subset(speeches_df, select = c("_id", "id", "hansard_membership_id", "speech_date", 
+                                              "year", "speakerid", "person_id", "speakername", "time", "mnis_id", 
+                                              "age", "as_speaker", "party_group", "ministry", "government", "proper_name", 
+                                              "house_start_date", "house_end_date", "gender", "party", 
+                                              "dods_id", "pims_id", "word_count"))
+head(speeches_df_2)
+
+### Explore how to complete unique identifiers for each speaker.
+#### Variables that could be used for this are hansard_membership_id, speakerid, person_id, speakername, mnis_id, dods_id, pims_id
+#### mnis_id in speeches_df == Member_Id in commons_df, for pre1979 records have no mnis_id, all post1979 records have an mnis_id.
+#### Blanks in predf person data will have to be resolved manually by exporting to excel and completing the blanks using a combination of pims_id, dods_id and names values. 
+### Post1979 values can be resolved by joining commons_df and post79_df on mnis_id, Member_ID
+### unique identifier for a person needs to be implemented or identified after this stage of cleaning. 
+filter(speeches_df_2, is.na(hansard_membership_id))
+
+# Exporting pre79_df to Excel, removing some unneed columns, these will be added in again after cleaning. 
+pre79_df_export <- subset(pre79_df, select = c("_id","id","hansard_membership_id","speech_date","year","speakerid","person_id",
+                       "speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry",
+                       "government","proper_name","house_start_date","date_of_birth","house_end_date","gender",
+                       "party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
+                       "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count"))
+                       
+write.xlsx(pre79_df_export, 'pre79_df_export.xlsx')
