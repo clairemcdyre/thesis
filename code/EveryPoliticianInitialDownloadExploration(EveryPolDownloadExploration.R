@@ -25,49 +25,51 @@ library(openxlsx)
 library(xlsx)
 library(lubridate)
 library(dplyr)
+library(XLConnect)
+library(rlist)
 
 
 # ##attempt 1 from http://everypolitician.org/uk/
 # 
 # #get politician info for the UK House of Commons. Data type = Large List
-# house_of_commons = everypolitician("United Kingdom")
-# 
-# #accessing elements in the list and assigning to dataframe
-# persons = as.data.frame(house_of_commons$persons[4:7])
-# organisations = as.data.frame(house_of_commons$organizations[2])
-# memberships = as.data.frame(house_of_commons$memberships[1:10])
-# areas = as.data.frame(house_of_commons$areas[1:3])
-# areas$identifiers <- NULL #get rid of identifier column
-# periods = as.data.frame(house_of_commons$periods)
-# 
-# # Observations # 
-# ##dataframes that are useful for my analysi: Persons, Memberships, Areas
-# ## persons can have > 1 memberships
-# ## the three dataframes need to be merged.
-# 
-# 
-# ## renaming some id columns for consistency
-# names(persons) <- c("family_name", "gender", "given_name", "person_id")
-# names(persons)
-# 
-# names(areas) <- c("area_id", "area_name")
-# names(areas)
-# 
-# ## merge three dataframes
-# politician_datatemp <- merge(persons, memberships, by = "person_id")
-# politician_data <- merge(politician_datatemp, areas, by = "area_id")
-# 
-# ##attempt 2 from https://github.com/mysociety/parlparse/blob/master/members/people.json
-# people <- fromJSON("data/people.json")
-# #explore structure of people json
-# names(people)
-# names(people$memberships)
-# names(people$organizations)
-# names(people$persons)
-# names(people$posts)
-# 
-# head(people$memberships, 10)
-# head(people$organizations, 10)
+        # house_of_commons = everypolitician("United Kingdom")
+        # 
+        # #accessing elements in the list and assigning to dataframe
+        # persons = as.data.frame(house_of_commons$persons[4:7])
+        # organisations = as.data.frame(house_of_commons$organizations[2])
+        # memberships = as.data.frame(house_of_commons$memberships[1:10])
+        # areas = as.data.frame(house_of_commons$areas[1:3])
+        # areas$identifiers <- NULL #get rid of identifier column
+        # periods = as.data.frame(house_of_commons$periods)
+        # 
+        # # Observations # 
+        # ##dataframes that are useful for my analysi: Persons, Memberships, Areas
+        # ## persons can have > 1 memberships
+        # ## the three dataframes need to be merged.
+        # 
+        # 
+        # ## renaming some id columns for consistency
+        # names(persons) <- c("family_name", "gender", "given_name", "person_id")
+        # names(persons)
+        # 
+        # names(areas) <- c("area_id", "area_name")
+        # names(areas)
+        # 
+        # ## merge three dataframes
+        # politician_datatemp <- merge(persons, memberships, by = "person_id")
+        # politician_data <- merge(politician_datatemp, areas, by = "area_id")
+        # 
+        # ##attempt 2 from https://github.com/mysociety/parlparse/blob/master/members/people.json
+        # people <- fromJSON("data/people.json")
+        # #explore structure of people json
+        # names(people)
+        # names(people$memberships)
+        # names(people$organizations)
+        # names(people$persons)
+        # names(people$posts)
+        # 
+        # head(people$memberships, 10)
+        # head(people$organizations, 10)
 # head(people$persons, 10)
 # head(people$posts, 10)
 # 
@@ -173,7 +175,7 @@ summary(pre79_df)
 
 ###post 1979 speeche dataset
 post79_out <- lapply(readLines("data/NISpeeches_Post1979_6.json"), fromJSON)#works
-post79_df <- data.frame(matrix(unlist(post79_out), nrow=68354, byrow=T),stringsAsFactors=FALSE, header = TRUE) 
+post79_df <- as.data.frame(matrix(unlist(post79_out), nrow=68354, byrow=T),stringsAsFactors=FALSE, header = TRUE) 
 
 head(post79_df)
 str(post79_df)
@@ -302,5 +304,26 @@ pre79_df_export <- subset(pre79_df, select = c("_id","id","hansard_membership_id
                        "government","proper_name","house_start_date","date_of_birth","house_end_date","gender",
                        "party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
                        "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count"))
-                       
-write.xlsx(pre79_df_export, 'pre79_df_export.xlsx')
+
+                  
+write.csv(pre79_df_export, 'data/pre79_df_export.csv')
+
+#Exporting commons_df to csv to help with person identification on pre79_df in Excel
+commons_df_export <- subset(commons_df, select = c("Member_Id", "Dods_Id", "Pims_Id", "DisplayAs", "ListAs", "FullTitle"))
+
+write.csv(commons_df_export, 'data/commons_df_export.csv')
+
+#After working on the file in Excel - re-import pre79_df__export again. 
+clean_pre79_df <- read.csv('data/pre79_df__export.csv', stringsAsFactors = FALSE)
+#check it
+head(clean_pre79_df)
+colnames((clean_pre79_df))
+
+#change the name of col[2] to "X_id" on post79_df so it matches clean_pre79_df and can be used as the merge key
+
+#join clean_pre79_df with pre79_df
+merged_pre79_df <- merge(pre79_df, clean_pre79_df, by )
+
+## merge isn't working because objects are still lists. data.frame or as.dataframe doesn't seem to work.
+## needs to be investigated further and them merge completed. And them write up notes for the methodology section and tidy up code. 
+

@@ -6,6 +6,8 @@ remotes::install_github("jblumenau/twfyR")
 install.github("lxml")
 install.packages('XML')
 install.packages("lubridate")
+install.packages("XLConnect")
+install.packages("rlist")
 
 #load library
 library(devtools)
