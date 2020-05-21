@@ -8,6 +8,7 @@ install.packages('XML')
 install.packages("lubridate")
 install.packages("XLConnect")
 install.packages("rlist")
+install.packages("sqldf")
 
 #load library
 library(devtools)

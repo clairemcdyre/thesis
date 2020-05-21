@@ -27,6 +27,7 @@ library(lubridate)
 library(dplyr)
 library(XLConnect)
 library(rlist)
+library(sqldf)
 
 
 # ##attempt 1 from http://everypolitician.org/uk/
@@ -319,11 +320,55 @@ clean_pre79_df <- read.csv('data/pre79_df__export.csv', stringsAsFactors = FALSE
 head(clean_pre79_df)
 colnames((clean_pre79_df))
 
-#change the name of col[2] to "X_id" on post79_df so it matches clean_pre79_df and can be used as the merge key
+#change the name of col[2] to "X_id" on pre79_df so it matches clean_pre79_df and can be used as the merge key
+colnames(pre79_df)[1] <- "main_id"
+colnames(clean_pre79_df)
+colnames(clean_pre79_df)[2] <- "main_id"
+
 
 #join clean_pre79_df with pre79_df
-merged_pre79_df <- merge(pre79_df, clean_pre79_df, by )
+merged_pre79_df <- merge(pre79_df, clean_pre79_df, by = "main_id" )
 
-## merge isn't working because objects are still lists. data.frame or as.dataframe doesn't seem to work.
-## needs to be investigated further and them merge completed. And them write up notes for the methodology section and tidy up code. 
+# verify the merge worked correctly
+dim(merged_pre79_df)
+head(merged_pre79_df)
+colnames(merged_pre79_df)
+merged_pre79_df[55] == "Joe Dean"
+filter(merged_pre79_df, merged_pre79_df[48] == "B089")#more testing needed
+filter(merged_pre79_df, merged_pre79_df[55] == "Gerry Fitt")#more testing needed
+
+#drop unneeded duplicate columns so that merged_pre79_df cols == post79_df
+colnames(merged_pre79_df)
+merged_pre79_df <- subset(merged_pre79_df, select = -c(2,4:38,74:77))
+test2 <- subset(merged_pre79_df, select = -c(4:38))
+test2 <- subset(merged_pre79_df, select = -c(39:41))
+colnames(merged_pre79_df)
+head(merged_pre79_df)
+dim(merged_pre79_df)
+
+#rename and rearrange columns
+colnames(merged_pre79_df) <- c("main_id","speech", "id","hansard_membership_id","speech_date","year","speakerid","person_id",
+                        "speakername","colnum","time","mnis_id", "age","url","as_speaker", "party_group", "ministry", "government","proper_name","house_start_date", 
+                        "date_of_birth", "house_end_date", "gender", "party", "dods_id", "pims_id","afinn_sentiment","afinn_sd","jockers_sentiment",
+                        "jockers_sd","nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")
+
+merged_pre79_df <- merged_pre79_df[c("main_id","id","speech","hansard_membership_id","speech_date","year","speakerid","person_id",
+                       "speakername","colnum","time","mnis_id","age","url","as_speaker","party_group","ministry",
+                       "government","proper_name","house_start_date","date_of_birth","house_end_date","gender",
+                       "party","dods_id","pims_id","afinn_sentiment","afinn_sd","jockers_sentiment","jockers_sd",
+                       "nrc_sentiment","nrc_sd","sentiword_sentiment","sentiword_sd","hu_sentiment","hu_sd","word_count")]
+
+#filter to remove any records pre 1964 as these will not be part of the analysis.
+merged_pre79_df <- subset(merged_pre79_df, merged_pre79_df$year >= "1964")
+dim(merged_pre79_df)
+summary((merged_pre79_df))
+
+### 3. Merge Pre79_df and Post79_df
+colnames(post79_df)[1] <- "main_id"
+speeches_df <- rbind(merged_pre79_df,post79_df)
+head(speeches_df,-10)
+str(speeches_df)
+dim(speeches_df)
+summary(speeches_df)
+
 
