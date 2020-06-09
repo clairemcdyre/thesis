@@ -28,6 +28,7 @@ library(dplyr)
 library(XLConnect)
 library(rlist)
 library(sqldf)
+library(gmodels)
 
 
 
@@ -222,7 +223,7 @@ summary((merged_pre79_df))
 ## need to run this on post79_df to create year column     
 post79_df = post79_df %>% 
         mutate(date = ymd(speech_date)) %>% 
-       mutate_at(vars(speech_date), funs(year, month, day))
+        mutate_at(vars(speech_date), funs(year, month, day))
 
 post79_df <- subset(post79_df, select = -c(date, month, day))
 
@@ -279,8 +280,29 @@ colnames(speeches_df)
 speeches_df <- subset(speeches_df, select = -c(time,url, colnum, speech_date, dods_id, pims_id,date_of_birth,house_start_date, house_end_date))
 
 
-summary(speeches_df)
+## 4. Data Exploration
+table(speeches_df$year)
+table(speeches_df$party)
+table(speeches_df$party_group)
 
+## Some party names are duplicated and need to be merged
+speeches_df$party[speeches_df$party == "Democratic Unionist"] <- "Democratic Unionist Party"
+speeches_df$party[speeches_df$party == "Ulster Unionist Party."] <- "Ulster Unionist Party"
+speeches_df$party[speeches_df$party == "SNP."] <- "Scottish National Party"
 
+# SDLP MP Gerry Fitt wrongly classified under party Social Democratic Party instead of SDLP
+speeches_df <- within(speeches_df, speeches_df$party[speeches_df$proper_name == 'Gerry Fitt'] <- 'Social Democratic & Labour Party')
+# Ulster Unionist Party. incorrectly categorised - needs to be re-categorised under party_group 'Other'
+speeches_df <- within(speeches_df, speeches_df$party_group[speeches_df$party_group == 'Ulster Unionist Party.'] <- 'Other')
+
+#get totals for each year
+table(speeches_df$party_group,speeches_df$year)
+table(speeches_df$party,speeches_df$year)
+table(speeches_df$ministry,speeches_df$year)
+table(speeches_df$government,speeches_df$year)
+table(speeches_df$proper_name,speeches_df$year)
+
+#Find top speaker for each year
+speeches_df %>% table(speeches_df$year) %>% count(speeches_df$proper_name, sort = TRUE) 
 
 
