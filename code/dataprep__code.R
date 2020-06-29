@@ -29,6 +29,11 @@ library(XLConnect)
 library(rlist)
 library(sqldf)
 library(gmodels)
+library(widyr)
+library(igraph)
+library(ggraph)
+library(lda)
+library(LDAvis)
 
 
 
@@ -217,7 +222,7 @@ merged_pre79_df <- subset(merged_pre79_df, merged_pre79_df$year >= "1964")
 dim(merged_pre79_df)
 summary((merged_pre79_df))
 
-#filter to remove any records from post79_df post 2019 as these will not be part of the analysis (post Labour government ended May 2010)
+#filter to remove any records from post79_df post 2011 as these will not be part of the analysis (post Labour government ended May 2010)
 
 
 ## need to run this on post79_df to create year column     
@@ -284,25 +289,203 @@ speeches_df <- subset(speeches_df, select = -c(time,url, colnum, speech_date, do
 table(speeches_df$year)
 table(speeches_df$party)
 table(speeches_df$party_group)
+table(speeches_df$ministry)
 
 ## Some party names are duplicated and need to be merged
-speeches_df$party[speeches_df$party == "Democratic Unionist"] <- "Democratic Unionist Party"
+speeches_df$party <- as.character(speeches_df$party)
+speeches_df$party <- as.factor(speeches_df$party)
+
+speeches_df$party[speeches_df$party== "Democratic Unionist"] <- "Democratic Unionist Party"
 speeches_df$party[speeches_df$party == "Ulster Unionist Party."] <- "Ulster Unionist Party"
 speeches_df$party[speeches_df$party == "SNP."] <- "Scottish National Party"
 
+speeches_df$party <- as.factor(speeches_df$party)
+speeches_df$party_group <- as.factor(speeches_df$party_group)
 # SDLP MP Gerry Fitt wrongly classified under party Social Democratic Party instead of SDLP
 speeches_df <- within(speeches_df, speeches_df$party[speeches_df$proper_name == 'Gerry Fitt'] <- 'Social Democratic & Labour Party')
 # Ulster Unionist Party. incorrectly categorised - needs to be re-categorised under party_group 'Other'
-speeches_df <- within(speeches_df, speeches_df$party_group[speeches_df$party_group == 'Ulster Unionist Party.'] <- 'Other')
+speeches_df$party_group <- as.character(speeches_df$party_group)
+speeches_df$party_group[speeches_df$party_group == 'Ulster Unionist Party.'] <- 'Other'
+speeches_df$party_group <- as.factor(speeches_df$party_group)
 
 #get totals for each year
 table(speeches_df$party_group,speeches_df$year)
 table(speeches_df$party,speeches_df$year)
+table(speeches_df$ministry)
+table(speeches_df$ministry, speeches_df$government)
+table(speeches_df$ministry, speeches_df$party_group)
+table(speeches_df$ministry, speeches_df$party)
 table(speeches_df$ministry,speeches_df$year)
 table(speeches_df$government,speeches_df$year)
 table(speeches_df$proper_name,speeches_df$year)
 
-#Find top speaker for each year
-speeches_df %>% table(speeches_df$year) %>% count(speeches_df$proper_name, sort = TRUE) 
+#split speeches_df by ministry
+Wilson1 <- subset(speeches_df, speeches_df$ministry == "Wilson1")
+Wilson2 <- subset(speeches_df, speeches_df$ministry == "Wilson2")
+Heath1 <- subset(speeches_df, speeches_df$ministry == "Heath1")
+Wilson3 <- subset(speeches_df, speeches_df$ministry == "Wilson3")
+Wilson4 <- subset(speeches_df, speeches_df$ministry == "Wilson4")
+Callaghan1 <- subset(speeches_df, speeches_df$ministry == "Callaghan1")
+Thatcher1 <- subset(speeches_df, speeches_df$ministry == "Thatcher1")
+Thatcher2 <- subset(speeches_df, speeches_df$ministry == "Thatcher2")
+Thatcher3 <- subset(speeches_df, speeches_df$ministry == "Thatcher3")
+Major1 <- subset(speeches_df, speeches_df$ministry == "Major1")
+Major2 <- subset(speeches_df, speeches_df$ministry == "Major2")
+Blair1 <- subset(speeches_df, speeches_df$ministry == "Blair1")
+Blair2 <- subset(speeches_df, speeches_df$ministry == "Blair2")
+Blair3 <- subset(speeches_df, speeches_df$ministry == "Blair3")
+Brown <- subset(speeches_df, speeches_df$ministry == "Brown")
 
+## Mallet from tidytext book
 
+# Separate the speeches column so it can be tidied up - remove stopwords, punctuation, to_lowercase
+Wilson1_speeches <- tibble(id = Wilson1$main_id, speech = Wilson1$speech)
+Wilson2_speeches <- tibble(id = Wilson2$main_id, speech = Wilson2$speech)
+Heath1_speeches <- tibble(id = Heath1$main_id, speech = Heath1$speech)
+Wilson3_speeches <- tibble(id = Wilson3$main_id, speech = Wilson3$speech)
+Wilson4_speeches <- tibble(id = Wilson4$main_id, speech = Wilson4$speech)
+Callaghan1_speeches <- tibble(id = Callaghan1$main_id, speech = Callaghan1$speech)
+Thatcher1_speeches <- tibble(id = Thatcher1$main_id, speech = Thatcher1$speech)
+Thatcher2_speeches <- tibble(id = Thatcher2$main_id, speech = Thatcher2$speech)
+Thatcher3_speeches <- tibble(id = Thatcher3$main_id, speech = Thatcher3$speech)
+Major1_speeches <- tibble(id = Major1$main_id, speech = Major1$speech)
+Major2_speeches <- tibble(id = Major2$main_id, speech = Major2$speech)
+Blair1_speeches <- tibble(id = Blair1$main_id, speech = Blair1$speech)
+Blair2_speeches <- tibble(id = Blair2$main_id, speech = Blair2$speech)
+Blair3_speeches <- tibble(id = Blair3$main_id, speech = Blair3$speech)
+Brown_speeches <- tibble(id = Brown$main_id, speech = Brown$speech)
+
+# mallet.instances <- mallet.import(speeches1_Wilson1_col$id, speeches1_Wilson1_col, "code/hansard stopwords.txt", token.regexp = "\\p{L}[\\p{L}\\p{P}]+\\p{L}")
+# 
+# mallet_model <- MalletLDA(num.topics = 5)
+# mallet_model$loadDocuments(mallet.instances)
+# mallet_model$train(100)
+
+# tidy(mallet_model)
+# tidy(mallet_model, matrix = "gamma")
+# 
+# term_counts <- rename(word_counts, term = word)
+# speeches_col <- speeches_col %>% 
+#         unnest_tokens(word, speech) %>%
+#         anti_join(stop_words)
+# 
+# freq_words <- speeches_col %>% 
+#         count(word, sort = TRUE) 
+# write.csv(freq_words, 'data/freq_words.csv')
+# 
+# #create custom stop word list to remove honorifics
+# hansard_stopwords <- tibble (word = c(as.character(1:15), "hon","honourable","member","friend","opposite","rt","right","minister","learned","gallant","speaker","acting","act","secretary","gentleman","committee"))
+# 
+# speeches_col <- speeches_col %>% 
+#         anti_join(hansard_stopwords)
+# 
+# speeches_col %>% 
+#         count(word, sort = TRUE) 
+# 
+# #remove numbers
+# nums <- speeches_col 
+#         %>% filter (str_detect(word, "^[0-9]")) 
+#         %>% select(word) 
+#         %>% unique() 
+# 
+# speeches_col <- speeches_col %>% 
+#         anti_join(nums, by = "word")
+# 
+# speech_word_pairs <- speeches_col %>% pairwise_count(word, id, sort = TRUE, upper = FALSE)  
+# 
+# speech_word_pairs
+# 
+# #plot word network
+# 
+# 
+# set.seed(1234)
+# speech_word_pairs %>%
+#         filter(n >= 250) %>%
+#         graph_from_data_frame() %>%
+#         ggraph(layout = "fr") +
+#         geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+#         geom_node_point(size = 5) +
+#         geom_node_text(aes(label = name), repel = TRUE, 
+#                        point.padding = unit(0.2, "lines")) +
+#         theme_void()
+# 
+# DIT# lemmatizing tokens in the speeches_col tibble
+# speeches_col <- speeches_col %>% mutate (lemma = lemmatize_words(word))
+
+#ldavis.cpsievert.me/reviews/reviews.html tutorial
+stop_words <- stopwords("SMART")
+class(stop_words)
+custom_stop_words <- c("hon","honourable","hn", "sir", "member","friend","opposite","rt","right","minister","learned","gallant","speaker","acting","act","secretary","gentleman","committee")    
+all_stop_words <- c(stop_words, custom_stop_words)
+
+#pre-processing
+Wilson1_speeches <- gsub("'","", Wilson1_speeches)#remove apostrophes
+Wilson1_speeches <- gsub("'", "", Wilson1_speeches)  # remove apostrophes
+Wilson1_speeches <- gsub("[[:punct:]]", " ", Wilson1_speeches)  # replace punctuation with space
+Wilson1_speeches <- gsub("[[:cntrl:]]", " ", Wilson1_speeches)  # replace control characters with space
+Wilson1_speeches <- gsub("^[[:space:]]+", "", Wilson1_speeches) # remove whitespace at beginning of documents
+Wilson1_speeches <- gsub("[[:space:]]+$", "", Wilson1_speeches) # remove whitespace at end of documents
+Wilson1_speeches <- tolower(Wilson1_speeches)  # force to lowercase
+#tokenise on space and output as a list
+Wilson1_list <- strsplit(Wilson1_speeches, "[[:space:]]+")
+
+#compute the table of terms
+wilson1.term.table <- table(unlist(Wilson1_list))
+wilson1.term.table <- sort(wilson1.term.table, decreasing = TRUE)
+
+#remove terms that are stop words or occur fewer than 5 times
+del <- names(wilson1.term.table) %in% all_stop_words | wilson1.term.table < 5
+wilson1.term.table <- wilson1.term.table[!del]
+wilson1_vocab <- names(wilson1.term.table)
+        
+# now put the documents into the format required by the lda package:
+get.terms <- function(x) {
+        index <- match(x, vocab)
+        index <- index[!is.na(index)]
+        rbind(as.integer(index - 1), as.integer(rep(1, length(index))))
+}
+wilson1_documents <- lapply(Wilson1_list, get.terms)                  
+
+# Compute some statistics related to the data set:
+Wilson1_D <- length(wilson1_documents)  # number of documents (2,000)
+Wilson1_W <- length(wilson1_vocab)  # number of terms in the vocab (14,568)
+Wilson1.doc.length <- sapply(wilson1_documents, function(x) sum(x[2, ]))  # number of tokens per document [312, 288, 170, 436, 291, ...]
+Wilson1_N <- sum(Wilson1.doc.length)  # total number of tokens in the data (546,827)
+term.frequency <- as.integer(wilson1.term.table)  # frequencies of terms in the corpus [8939, 5544, 2411, 2410, 2143, ...]
+
+# MCMC and model tuning parameters:
+K <- 20
+G <- 5000
+alpha <- 0.02
+eta <- 0.02
+
+# Fit the model:
+library(lda)
+set.seed(357)
+Wilson1_t1 <- Sys.time()
+Wilson1_fit <- lda.collapsed.gibbs.sampler(documents = wilson1_documents, K = K, vocab = wilson1_vocab, 
+                                   num.iterations = G, alpha = alpha, 
+                                   eta = eta, initial = NULL, burnin = 0,
+                                   compute.log.likelihood = TRUE)
+Wilson1_t2 <- Sys.time()
+Wilson1_t2 - Wilson1_t1  # about 24 minutes on laptop
+
+theta <- t(apply(Wilson1_fit$document_sums + alpha, 2, function(x) x/sum(x)))
+phi <- t(apply(t(Wilson1_fit$topics) + eta, 2, function(x) x/sum(x)))
+
+Wilson1_done <- list(phi = phi,
+                     theta = theta,
+                     doc.length = Wilson1.doc.length,
+                     vocab = wilson1_vocab,
+                     term.frequency = term.frequency)
+
+library(servr)
+
+# create the JSON object to feed the visualization:
+json <- createJSON(phi = Wilson1_done$phi, 
+                   theta = Wilson1_done$theta, 
+                   doc.length = Wilson1_done$doc.length, 
+                   vocab = Wilson1_done$vocab, 
+                   term.frequency = Wilson1_done$term.frequency)
+
+serVis(json, out.dir = 'vis', open.browser = TRUE)
