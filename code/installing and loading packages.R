@@ -17,6 +17,7 @@ install.packages("ggraph")
 install.packages("lda")
 install.packages("LDAvis")
 install.packages("servr")
+install.packages("textstem")
 #load library
 library(devtools)
 library(everypoliticianR)
