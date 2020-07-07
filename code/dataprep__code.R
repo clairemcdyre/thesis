@@ -357,10 +357,10 @@ Brown_speeches <- tibble(id = Brown$main_id, speech = Brown$speech)
 
 
 #ldavis.cpsievert.me/reviews/reviews.html tutorial
-stop_words <- stopwords("SMART")
-custom_stop_words <- c("hon","honourable","hn", "sir", "member","friend","opposite","rt","right","minister","learned","gallant","speaker","acting","act","secretary","gentleman","committee","mrs","mr","northern", "ireland", "members", "nthe", "nthis","â","dr","esquire", "government", "house", "debate", "")    
-
-all_stop_words <- c(stop_words, custom_stop_words)
+# stop_words <- stopwords("SMART")
+# custom_stop_words <- c("hon","honourable","hn", "sir", "member","friend","opposite","rt","right","minister","learned","gallant","speaker","acting","act","secretary","gentleman","committee","mrs","mr","northern", "ireland", "members", "nthe", "nthis","â","dr","esquire", "government", "house", "debate", "")    
+# 
+# all_stop_words <- c(stop_words, custom_stop_words)
 
 
 
@@ -383,7 +383,7 @@ wilson1.term.table <- table(unlist(Wilson1_list))
 wilson1.term.table <- sort(wilson1.term.table, decreasing = TRUE)
 
 #remove terms that are stop words or occur fewer than 5 times
-del <- names(wilson1.term.table) %in% all_stop_words | wilson1.term.table < 5
+del <- names(wilson1.term.table) %in% stop_wordslist | wilson1.term.table < 5
 wilson1.term.table <- wilson1.term.table[!del]
 vocab <- names(wilson1.term.table)
         
@@ -404,7 +404,7 @@ Wilson1_term.frequency <- as.integer(wilson1.term.table)  # frequencies of terms
 
 
 # MCMC and model tuning parameters:
-K <- 15
+K <- 20
 G <- 5000
 alpha <- 0.02
 eta <- 0.02
