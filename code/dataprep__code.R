@@ -319,6 +319,11 @@ table(speeches_df$ministry,speeches_df$year)
 table(speeches_df$government,speeches_df$year)
 table(speeches_df$proper_name,speeches_df$year)
 
+#Export for tableau to create some exploratory graphs
+tableau_export <- subset(speeches_df, select = c("main_id","year","mnis_id","party_group","ministry","government","proper_name","gender","party","word_count"))
+
+write.csv(tableau_export, "data/tableau_export_hansard.csv")
+
 #split speeches_df by ministry
 Wilson1 <- subset(speeches_df, speeches_df$ministry == "Wilson1")
 Wilson2 <- subset(speeches_df, speeches_df$ministry == "Wilson2")
@@ -340,7 +345,7 @@ Brown <- subset(speeches_df, speeches_df$ministry == "Brown")
 
 # Separate the speeches column so it can be tidied up - remove stopwords, punctuation, to_lowercase
 Wilson1_speeches <- tibble(id = Wilson1$main_id, speech = Wilson1$speech)
-Wilson2_speeches <- tibble(id = Wilson2$main_id, speech = Wilson2$speech)
+Wilson3_speeches <- tibble(id = Wilson2$main_id, speech = Wilson2$speech)
 Heath1_speeches <- tibble(id = Heath1$main_id, speech = Heath1$speech)
 Wilson3_speeches <- tibble(id = Wilson3$main_id, speech = Wilson3$speech)
 Wilson4_speeches <- tibble(id = Wilson4$main_id, speech = Wilson4$speech)
@@ -353,6 +358,193 @@ Major2_speeches <- tibble(id = Major2$main_id, speech = Major2$speech)
 Blair1_speeches <- tibble(id = Blair1$main_id, speech = Blair1$speech)
 Blair2_speeches <- tibble(id = Blair2$main_id, speech = Blair2$speech)
 Blair3_speeches <- tibble(id = Blair3$main_id, speech = Blair3$speech)
-Brown_speeches <- tibble(id = Brown$main_id, speech = Brown$speech)
+Brown1_speeches <- tibble(id = Brown$main_id, speech = Brown$speech)
 
 
+#Wilson1 dataset
+#pre-processing
+Wilson1_speeches <- gsub("'","", Wilson1_speeches$speech)#remove apostrophes
+Wilson1_speeches <- gsub("[[:punct:]]", " ", Wilson1_speeches)  # replace punctuation with space
+Wilson1_speeches <- gsub("[[:cntrl:]]", " ", Wilson1_speeches)  # replace control characters with space
+Wilson1_speeches <- gsub("[[:space:]]+$", "", Wilson1_speeches) # remove whitespace at end of documents
+Wilson1_speeches <- gsub('[[:digit:]]+', '', Wilson1_speeches) #remove digits
+Wilson1_speeches <- tolower(Wilson1_speeches)  # force to lowercase
+Wilson1_speeches <- lemmatize_words(Wilson1_speeches)  # lemmatize words
+
+write.csv(Wilson1_speeches, "data/Wilson1_speeches.csv")
+
+#Wilson2 dataset
+#pre-processing
+Wilson2_speeches <- gsub("'","", Wilson2_speeches$speech)#remove apostrophes
+Wilson2_speeches <- gsub("[[:punct:]]", " ", Wilson2_speeches)  # replace punctuation with space
+Wilson2_speeches <- gsub("[[:cntrl:]]", " ", Wilson2_speeches)  # replace control characters with space
+Wilson2_speeches <- gsub("[[:space:]]+$", "", Wilson2_speeches) # remove whitespace at end of documents
+Wilson2_speeches <- gsub('[[:digit:]]+', '', Wilson2_speeches) #remove digits
+Wilson2_speeches <- tolower(Wilson2_speeches)  # force to lowercase
+Wilson2_speeches <- lemmatize_words(Wilson2_speeches)  # lemmatize words
+
+write.csv(Wilson2_speeches, "data/Wilson2_speeches.csv")
+
+#Heath1 dataset
+#pre-processing
+Heath1_speeches <- gsub("'","", Heath1_speeches$speech)#remove apostrophes
+Heath1_speeches <- gsub("[[:punct:]]", " ", Heath1_speeches)  # replace punctuation with space
+Heath1_speeches <- gsub("[[:cntrl:]]", " ", Heath1_speeches)  # replace control characters with space
+Heath1_speeches <- gsub("[[:space:]]+$", "", Heath1_speeches) # remove whitespace at end of documents
+Heath1_speeches <- gsub('[[:digit:]]+', '', Heath1_speeches) #remove digits
+Heath1_speeches <- tolower(Heath1_speeches)  # force to lowercase
+Heath1_speeches <- lemmatize_words(Heath1_speeches)  # lemmatize words
+
+write.csv(Heath1_speeches, "data/Heath1_speeches.csv")
+
+#Wilson3 dataset
+#pre-processing
+Wilson3_speeches <- gsub("'","", Wilson3_speeches$speech)#remove apostrophes
+Wilson3_speeches <- gsub("[[:punct:]]", " ", Wilson3_speeches)  # replace punctuation with space
+Wilson3_speeches <- gsub("[[:cntrl:]]", " ", Wilson3_speeches)  # replace control characters with space
+Wilson3_speeches <- gsub("[[:space:]]+$", "", Wilson3_speeches) # remove whitespace at end of documents
+Wilson3_speeches <- gsub('[[:digit:]]+', '', Wilson3_speeches) #remove digits
+Wilson3_speeches <- tolower(Wilson3_speeches)  # force to lowercase
+Wilson3_speeches <- lemmatize_words(Wilson3_speeches)  # lemmatize words
+
+write.csv(Wilson3_speeches, "data/Wilson3_speeches.csv")
+
+#Wilson4 dataset
+#pre-processing
+Wilson4_speeches <- gsub("'","", Wilson4_speeches$speech)#remove apostrophes
+Wilson4_speeches <- gsub("[[:punct:]]", " ", Wilson4_speeches)  # replace punctuation with space
+Wilson4_speeches <- gsub("[[:cntrl:]]", " ", Wilson4_speeches)  # replace control characters with space
+Wilson4_speeches <- gsub("[[:space:]]+$", "", Wilson4_speeches) # remove whitespace at end of documents
+Wilson4_speeches <- gsub('[[:digit:]]+', '', Wilson4_speeches) #remove digits
+Wilson4_speeches <- tolower(Wilson4_speeches)  # force to lowercase
+Wilson4_speeches <- lemmatize_words(Wilson4_speeches)  # lemmatize words
+
+write.csv(Wilson4_speeches, "data/Wilson4_speeches.csv")
+
+#Callaghan1_speeches
+#pre-processing
+Callaghan1_speeches <- gsub("'","", Callaghan1_speeches$speech)#remove apostrophes
+Callaghan1_speeches <- gsub("[[:punct:]]", " ", Callaghan1_speeches)  # replace punctuation with space
+Callaghan1_speeches <- gsub("[[:cntrl:]]", " ", Callaghan1_speeches)  # replace control characters with space
+Callaghan1_speeches <- gsub("[[:space:]]+$", "", Callaghan1_speeches) # remove whitespace at end of documents
+Callaghan1_speeches <- gsub('[[:digit:]]+', '', Callaghan1_speeches) #remove digits
+Callaghan1_speeches <- tolower(Callaghan1_speeches)  # force to lowercase
+Callaghan1_speeches <- lemmatize_words(Callaghan1_speeches)  # lemmatize words
+
+write.csv(Callaghan1_speeches, "data/Callaghan1_speeches.csv")
+#Thatcher1_speeches
+#pre-processing
+Thatcher1_speeches <- gsub("'","", Thatcher1_speeches$speech)#remove apostrophes
+Thatcher1_speeches <- gsub("[[:punct:]]", " ", Thatcher1_speeches)  # replace punctuation with space
+Thatcher1_speeches <- gsub("[[:cntrl:]]", " ", Thatcher1_speeches)  # replace control characters with space
+Thatcher1_speeches <- gsub("[[:space:]]+$", "", Thatcher1_speeches) # remove whitespace at end of documents
+Thatcher1_speeches <- gsub('[[:digit:]]+', '', Thatcher1_speeches) #remove digits
+Thatcher1_speeches <- tolower(Thatcher1_speeches)  # force to lowercase
+Thatcher1_speeches <- lemmatize_words(Thatcher1_speeches)  # lemmatize words
+
+write.csv(Thatcher1_speeches, "data/Thatcher1_speeches.csv")
+
+#Thatcher2_speeches
+#pre-processing
+Thatcher2_speeches <- gsub("'","", Thatcher2_speeches$speech)#remove apostrophes
+Thatcher2_speeches <- gsub("[[:punct:]]", " ", Thatcher2_speeches)  # replace punctuation with space
+Thatcher2_speeches <- gsub("[[:cntrl:]]", " ", Thatcher2_speeches)  # replace control characters with space
+Thatcher2_speeches <- gsub("[[:space:]]+$", "", Thatcher2_speeches) # remove whitespace at end of documents
+Thatcher2_speeches <- gsub('[[:digit:]]+', '', Thatcher2_speeches) #remove digits
+Thatcher2_speeches <- tolower(Thatcher2_speeches)  # force to lowercase
+Thatcher2_speeches <- lemmatize_words(Thatcher2_speeches)  # lemmatize words
+
+write.csv(Thatcher2_speeches, "data/Thatcher2_speeches.csv")
+
+#Thatcher3_speeches
+#pre-processing
+Thatcher3_speeches <- gsub("'","", Thatcher3_speeches$speech)#remove apostrophes
+Thatcher3_speeches <- gsub("[[:punct:]]", " ", Thatcher3_speeches)  # replace punctuation with space
+Thatcher3_speeches <- gsub("[[:cntrl:]]", " ", Thatcher3_speeches)  # replace control characters with space
+Thatcher3_speeches <- gsub("[[:space:]]+$", "", Thatcher3_speeches) # remove whitespace at end of documents
+Thatcher3_speeches <- gsub('[[:digit:]]+', '', Thatcher3_speeches) #remove digits
+Thatcher3_speeches <- tolower(Thatcher3_speeches)  # force to lowercase
+Thatcher3_speeches <- lemmatize_words(Thatcher3_speeches)  # lemmatize words
+
+write.csv(Thatcher3_speeches, "data/Thatcher3_speeches.csv")
+
+#Major1_speeches
+#pre-processing
+Major1_speeches <- gsub("'","", Major1_speeches$speech)#remove apostrophes
+Major1_speeches <- gsub("[[:punct:]]", " ", Major1_speeches)  # replace punctuation with space
+Major1_speeches <- gsub("[[:cntrl:]]", " ", Major1_speeches)  # replace control characters with space
+Major1_speeches <- gsub("[[:space:]]+$", "", Major1_speeches) # remove whitespace at end of documents
+Major1_speeches <- gsub('[[:digit:]]+', '', Major1_speeches) #remove digits
+Major1_speeches <- tolower(Major1_speeches)  # force to lowercase
+Major1_speeches <- lemmatize_words(Major1_speeches)  # lemmatize words
+
+write.csv(Major1_speeches, "data/Major1_speeches.csv")
+#Major2_speeches
+#pre-processing
+Major2_speeches <- gsub("'","", Major2_speeches$speech)#remove apostrophes
+Major2_speeches <- gsub("[[:punct:]]", " ", Major2_speeches)  # replace punctuation with space
+Major2_speeches <- gsub("[[:cntrl:]]", " ", Major2_speeches)  # replace control characters with space
+Major2_speeches <- gsub("[[:space:]]+$", "", Major2_speeches) # remove whitespace at end of documents
+Major2_speeches <- gsub('[[:digit:]]+', '', Major2_speeches) #remove digits
+Major2_speeches <- tolower(Major2_speeches)  # force to lowercase
+Major2_speeches <- lemmatize_words(Major2_speeches)  # lemmatize words
+
+write.csv(Major2_speeches, "data/Major2_speeches.csv")
+
+#Blair1_speeches
+#pre-processing
+Blair1_speeches <- gsub("'","", Blair1_speeches$speech)#remove apostrophes
+Blair1_speeches <- gsub("[[:punct:]]", " ", Blair1_speeches)  # replace punctuation with space
+Blair1_speeches <- gsub("[[:cntrl:]]", " ", Blair1_speeches)  # replace control characters with space
+Blair1_speeches <- gsub("[[:space:]]+$", "", Blair1_speeches) # remove whitespace at end of documents
+Blair1_speeches <- gsub('[[:digit:]]+', '', Blair1_speeches) #remove digits
+Blair1_speeches <- tolower(Blair1_speeches)  # force to lowercase
+Blair1_speeches <- lemmatize_words(Blair1_speeches)  # lemmatize words
+
+write.csv(Blair1_speeches, "data/Blair1_speeches.csv")
+
+#Blair2_speeches
+#pre-processing
+Blair2_speeches <- gsub("'","", Blair2_speeches$speech)#remove apostrophes
+Blair2_speeches <- gsub("[[:punct:]]", " ", Blair2_speeches)  # replace punctuation with space
+Blair2_speeches <- gsub("[[:cntrl:]]", " ", Blair2_speeches)  # replace control characters with space
+Blair2_speeches <- gsub("[[:space:]]+$", "", Blair2_speeches) # remove whitespace at end of documents
+Blair2_speeches <- gsub('[[:digit:]]+', '', Blair2_speeches) #remove digits
+Blair2_speeches <- tolower(Blair2_speeches)  # force to lowercase
+Blair2_speeches <- lemmatize_words(Blair2_speeches)  # lemmatize words
+
+write.csv(Blair2_speeches, "data/Blair2_speeches.csv")
+#Blair3_speeches
+#pre-processing
+Blair3_speeches <- gsub("'","", Blair3_speeches$speech)#remove apostrophes
+Blair3_speeches <- gsub("[[:punct:]]", " ", Blair3_speeches)  # replace punctuation with space
+Blair3_speeches <- gsub("[[:cntrl:]]", " ", Blair3_speeches)  # replace control characters with space
+Blair3_speeches <- gsub("[[:space:]]+$", "", Blair3_speeches) # remove whitespace at end of documents
+Blair3_speeches <- gsub('[[:digit:]]+', '', Blair3_speeches) #remove digits
+Blair3_speeches <- tolower(Blair3_speeches)  # force to lowercase
+Blair3_speeches <- lemmatize_words(Blair3_speeches)  # lemmatize words
+
+write.csv(Blair3_speeches, "data/Blair3_speeches.csv")
+
+#Brown1_speeches
+#pre-processing
+Brown1_speeches <- gsub("'","", Brown1_speeches$speech)#remove apostrophes
+Brown1_speeches <- gsub("[[:punct:]]", " ", Brown1_speeches)  # replace punctuation with space
+Brown1_speeches <- gsub("[[:cntrl:]]", " ", Brown1_speeches)  # replace control characters with space
+Brown1_speeches <- gsub("[[:space:]]+$", "", Brown1_speeches) # remove whitespace at end of documents
+Brown1_speeches <- gsub('[[:digit:]]+', '', Brown1_speeches) #remove digits
+Brown1_speeches <- tolower(Brown1_speeches)  # force to lowercase
+Brown1_speeches <- lemmatize_words(Brown1_speeches)  # lemmatize words
+
+write.csv(Brown1_speeches, "data/Brown1_speeches.csv")
+
+prep.dataset <- function(x) {
+        x <- gsub("'","", x$speech)#remove apostrophes
+        x <- gsub("[[:punct:]]", " ", x)  # replace punctuation with space
+        x <- gsub("[[:cntrl:]]", " ", x)  # replace control characters with space
+        x <- gsub("[[:space:]]+$", "", x) # remove whitespace at end of documents
+        x <- gsub('[[:digit:]]+', '', x) #remove digits
+        x <- tolower(x)  # force to lowercase
+        x <- lemmatize_words(x)  # lemmatize words
+        
+}

@@ -1,0 +1,160 @@
+#connect to Mallet via command line
+cd /Applications/Mallet 
+
+#get list of Mallet import parameters
+bin/Mallet import-dir --help
+
+#testing
+bin/Mallet import-dir --input /Applications/Mallet/sample-data/web/en --output tutorial.mallet --keep-sequence --remove-stopwords
+
+bin/Mallet import-dir --input /Applications/Mallet/sample-data/web/en --output tutorial.mallet --keep-sequence --remove-stopwords
+
+bin/Mallet train-topics --input web.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys tutorial_key.txt --output-doc-topics tutorial_Composition.txt
+
+
+#testing on Heath1 dataset to find optimum parameters
+#test 1
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test1.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys heath1_test1.mallet_key.txt --output-doc-topics heath1_test1.composition.txt
+
+#test 2
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test2.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test2.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys heath1_test2.mallet_key.txt --output-doc-topics heath1_test2.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+#test 3
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test3.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test3.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys heath1_test3.mallet_key.txt --output-doc-topics heath1_test3.composition.txt --optimize-interval 20 --optimize-burn-in 40
+
+#test 4
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test4.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test4.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys heath1_test4.mallet_key.txt --output-doc-topics heath1_test4.composition.txt --optimize-interval 30 --optimize-burn-in 60
+
+#test 5
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test5.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test5.mallet --num-topics 20 --output-state topic-state.gz --output-topic-keys heath1_test5.mallet_key.txt --output-doc-topics heath1_test5.composition.txt --optimize-interval 15 --optimize-burn-in 30
+
+#test 6
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test7.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test7.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys heath1_test7.mallet_key.txt --output-doc-topics heath1_test7.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+#test 7
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test7.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test7.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys heath1_test7.mallet_key.txt --output-doc-topics heath1_test7.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+#test 8
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test8.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test8.mallet --num-topics 40 --output-state topic-state.gz --output-topic-keys heath1_test8.mallet_key.txt --output-doc-topics heath1_test8.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+#test 9
+bin/mallet import-file --input Heath1_speeches.txt --output heath1_test9.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input heath1_test9.mallet --num-topics 50 --output-state topic-state.gz --output-topic-keys heath1_test9.mallet_key.txt --output-doc-topics heath1_test9.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+
+# Running model on remaining datasets
+## Wilson1
+
+bin/mallet import-file --input Wilson1_speeches.txt --output Wilson1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Wilson1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Wilson1.mallet_key.txt --output-doc-topics Wilson1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+
+# Running model on remaining datasets
+## Wilson2
+
+bin/mallet import-file --input Wilson2_speeches.txt --output Wilson2.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Wilson2.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Wilson2.mallet_key.txt --output-doc-topics Wilson2.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Wilson3
+
+bin/mallet import-file --input Wilson3_speeches.txt --output Wilson3.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Wilson3.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Wilson3.mallet_key.txt --output-doc-topics Wilson3.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Wilson4
+
+bin/mallet import-file --input Wilson4_speeches.txt --output Wilson4.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Wilson4.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Wilson4.mallet_key.txt --output-doc-topics Wilson4.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Callaghan1
+
+bin/mallet import-file --input Callaghan1_speeches.txt --output Callaghan1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Callaghan1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Callaghan1.mallet_key.txt --output-doc-topics Callaghan1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+
+# Running model on remaining datasets
+## Thatcher1	
+
+bin/mallet import-file --input Thatcher1_speeches.txt --output Thatcher1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Thatcher1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Thatcher1.mallet_key.txt --output-doc-topics Thatcher1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Thatcher2
+
+bin/mallet import-file --input Thatcher2_speeches.txt --output Thatcher2.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Thatcher2.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Thatcher2.mallet_key.txt --output-doc-topics Thatcher2.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Thatcher3	
+
+bin/mallet import-file --input Thatcher3_speeches.txt --output Thatcher3.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Thatcher3.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Thatcher3.mallet_key.txt --output-doc-topics Thatcher3.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Major1	
+
+bin/mallet import-file --input Major1_speeches.txt --output Major1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Major1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Major1.mallet_key.txt --output-doc-topics Major1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Major2	
+
+bin/mallet import-file --input Major2_speeches.txt --output Major2.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Major2.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Major2.mallet_key.txt --output-doc-topics Major2.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Blair1	
+
+bin/mallet import-file --input Blair1_speeches.txt --output Blair1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Blair1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Blair1.mallet_key.txt --output-doc-topics Blair1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Blair2	
+
+bin/mallet import-file --input Blair2_speeches.txt --output Blair2.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Blair2.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Blair2.mallet_key.txt --output-doc-topics Blair2.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Blair3	
+
+bin/mallet import-file --input Blair3_speeches.txt --output Blair3.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Blair3.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Blair3.mallet_key.txt --output-doc-topics Blair3.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20
+
+# Running model on remaining datasets
+## Brown1	
+
+bin/mallet import-file --input Brown1_speeches.txt --output Brown1.mallet --keep-sequence-bigrams true --stoplist-file all_stop_words.txt
+
+bin/Mallet train-topics --input Brown1.mallet --num-topics 30 --output-state topic-state.gz --output-topic-keys Brown1.mallet_key.txt --output-doc-topics Brown1.mallet.composition.txt --optimize-interval 10 --optimize-burn-in 20

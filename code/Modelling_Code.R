@@ -146,17 +146,19 @@ Wilson2_done <- list(phi = phi,
                      doc.length = Wilson2.doc.length,
                      vocab = wilson2_vocab,
                      term.frequency = Wilson2_term.frequency)
+library(topicmodels)
+perplexity(Wilson2_fit, newdata = wilson2.term.table,estimate_theta=FALSE)
 
 #library(servr)
 
 # create the JSON object to feed the visualization:
-wilson2_json <- createJSON(phi = Wilson2_done$phi, 
+wilson2.1_json <- createJSON(phi = Wilson2_done$phi, 
                            theta = Wilson2_done$theta, 
                            doc.length = Wilson2_done$doc.length, 
                            vocab = Wilson2_done$vocab, 
                            term.frequency = Wilson2_done$term.frequency)
 
-serVis(wilson2_json, out.dir = 'vis', open.browser = TRUE)
+serVis(wilson2.1_json, out.dir = 'vis', open.browser = TRUE)
 
 #Heath1 dataset
 #pre-processing
