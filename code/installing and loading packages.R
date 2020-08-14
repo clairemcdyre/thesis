@@ -22,8 +22,6 @@ install.packages("stringi")
 install.packages("sentimentR")
 install.packages("ldatuning")
 install.packages("topicmodels")
-#load library
-library(devtools)
-library(everypoliticianR)
-library(twfyR)
-library(ldatuning)
+install.packages("NMF")
+install.packages("Biobase")
+

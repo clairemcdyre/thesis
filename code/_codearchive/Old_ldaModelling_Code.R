@@ -1,5 +1,5 @@
-#ldavis.cpsievert.me/reviews/reviews.html tutorial
-# stop_words <- stopwords("SMART")
+#This is attempt 1 at topic modelling using the lda package
+#This approach did not produce great results. It was subsequently replaced by MALLET -- Command Line
 
 #Wilson1 dataset
 #pre-processing
@@ -10,6 +10,8 @@ Wilson1_speeches <- gsub("[[:space:]]+$", "", Wilson1_speeches) # remove whitesp
 Wilson1_speeches <- gsub('[[:digit:]]+', '', Wilson1_speeches) #remove digits
 Wilson1_speeches <- tolower(Wilson1_speeches)  # force to lowercase
 Wilson1_speeches <- lemmatize_words(Wilson1_speeches)  # lemmatize words
+
+write.csv(Wilson1_speeches, "data/Wilson1_speeches.csv")
 
 
 

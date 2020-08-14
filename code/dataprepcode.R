@@ -302,7 +302,7 @@ speeches_df$party[speeches_df$party == "SNP."] <- "Scottish National Party"
 speeches_df$party <- as.factor(speeches_df$party)
 speeches_df$party_group <- as.factor(speeches_df$party_group)
 # SDLP MP Gerry Fitt wrongly classified under party Social Democratic Party instead of SDLP - this code doesn't work? 
-#speeches_df <- within(speeches_df, speeches_df$party[speeches_df[15]== "Gerry Fitt"] <- 'Social Democratic & Labour Party')
+speeches_df <- within(speeches_df, speeches_df$party[speeches_df[15]== "Gerry Fitt"] <- 'Social Democratic & Labour Party')
 # Ulster Unionist Party. incorrectly categorised - needs to be re-categorised under party_group 'Other'
 speeches_df$party_group <- as.character(speeches_df$party_group)
 speeches_df$party_group[speeches_df$party_group == 'Ulster Unionist Party.'] <- 'Other'
@@ -341,7 +341,6 @@ Blair2 <- subset(speeches_df, speeches_df$ministry == "Blair2")
 Blair3 <- subset(speeches_df, speeches_df$ministry == "Blair3")
 Brown <- subset(speeches_df, speeches_df$ministry == "Brown")
 
-## Mallet from tidytext book
 
 # Separate the speeches column so it can be tidied up - remove stopwords, punctuation, to_lowercase
 Wilson1_speeches <- tibble(id = Wilson1$main_id, speech = Wilson1$speech)
@@ -371,7 +370,7 @@ Wilson1_speeches <- gsub('[[:digit:]]+', '', Wilson1_speeches) #remove digits
 Wilson1_speeches <- tolower(Wilson1_speeches)  # force to lowercase
 Wilson1_speeches <- lemmatize_words(Wilson1_speeches)  # lemmatize words
 
-write.csv(Wilson1_speeches, "data/Wilson1_speeches.csv")
+write.csv(Wilson1_speeches, "data/Wilson1_speeches.csv")# export to csv for MALLET lda modelling
 
 #Wilson2 dataset
 #pre-processing
@@ -383,7 +382,7 @@ Wilson2_speeches <- gsub('[[:digit:]]+', '', Wilson2_speeches) #remove digits
 Wilson2_speeches <- tolower(Wilson2_speeches)  # force to lowercase
 Wilson2_speeches <- lemmatize_words(Wilson2_speeches)  # lemmatize words
 
-write.csv(Wilson2_speeches, "data/Wilson2_speeches.csv")
+write.csv(Wilson2_speeches, "data/Wilson2_speeches.csv")# export to csv for MALLET lda modelling
 
 #Heath1 dataset
 #pre-processing
@@ -395,7 +394,7 @@ Heath1_speeches <- gsub('[[:digit:]]+', '', Heath1_speeches) #remove digits
 Heath1_speeches <- tolower(Heath1_speeches)  # force to lowercase
 Heath1_speeches <- lemmatize_words(Heath1_speeches)  # lemmatize words
 
-write.csv(Heath1_speeches, "data/Heath1_speeches.csv")
+write.csv(Heath1_speeches, "data/Heath1_speeches.csv")# export to csv for MALLET lda modelling
 
 #Wilson3 dataset
 #pre-processing
@@ -407,7 +406,7 @@ Wilson3_speeches <- gsub('[[:digit:]]+', '', Wilson3_speeches) #remove digits
 Wilson3_speeches <- tolower(Wilson3_speeches)  # force to lowercase
 Wilson3_speeches <- lemmatize_words(Wilson3_speeches)  # lemmatize words
 
-write.csv(Wilson3_speeches, "data/Wilson3_speeches.csv")
+write.csv(Wilson3_speeches, "data/Wilson3_speeches.csv")# export to csv for MALLET lda modelling
 
 #Wilson4 dataset
 #pre-processing
@@ -419,7 +418,7 @@ Wilson4_speeches <- gsub('[[:digit:]]+', '', Wilson4_speeches) #remove digits
 Wilson4_speeches <- tolower(Wilson4_speeches)  # force to lowercase
 Wilson4_speeches <- lemmatize_words(Wilson4_speeches)  # lemmatize words
 
-write.csv(Wilson4_speeches, "data/Wilson4_speeches.csv")
+write.csv(Wilson4_speeches, "data/Wilson4_speeches.csv")# export to csv for MALLET lda modelling
 
 #Callaghan1_speeches
 #pre-processing
@@ -431,7 +430,7 @@ Callaghan1_speeches <- gsub('[[:digit:]]+', '', Callaghan1_speeches) #remove dig
 Callaghan1_speeches <- tolower(Callaghan1_speeches)  # force to lowercase
 Callaghan1_speeches <- lemmatize_words(Callaghan1_speeches)  # lemmatize words
 
-write.csv(Callaghan1_speeches, "data/Callaghan1_speeches.csv")
+write.csv(Callaghan1_speeches, "data/Callaghan1_speeches.csv")# export to csv for MALLET lda modelling
 #Thatcher1_speeches
 #pre-processing
 Thatcher1_speeches <- gsub("'","", Thatcher1_speeches$speech)#remove apostrophes
@@ -442,7 +441,7 @@ Thatcher1_speeches <- gsub('[[:digit:]]+', '', Thatcher1_speeches) #remove digit
 Thatcher1_speeches <- tolower(Thatcher1_speeches)  # force to lowercase
 Thatcher1_speeches <- lemmatize_words(Thatcher1_speeches)  # lemmatize words
 
-write.csv(Thatcher1_speeches, "data/Thatcher1_speeches.csv")
+write.csv(Thatcher1_speeches, "data/Thatcher1_speeches.csv")# export to csv for MALLET lda modelling
 
 #Thatcher2_speeches
 #pre-processing
@@ -454,7 +453,7 @@ Thatcher2_speeches <- gsub('[[:digit:]]+', '', Thatcher2_speeches) #remove digit
 Thatcher2_speeches <- tolower(Thatcher2_speeches)  # force to lowercase
 Thatcher2_speeches <- lemmatize_words(Thatcher2_speeches)  # lemmatize words
 
-write.csv(Thatcher2_speeches, "data/Thatcher2_speeches.csv")
+write.csv(Thatcher2_speeches, "data/Thatcher2_speeches.csv")# export to csv for MALLET lda modelling
 
 #Thatcher3_speeches
 #pre-processing
@@ -466,7 +465,7 @@ Thatcher3_speeches <- gsub('[[:digit:]]+', '', Thatcher3_speeches) #remove digit
 Thatcher3_speeches <- tolower(Thatcher3_speeches)  # force to lowercase
 Thatcher3_speeches <- lemmatize_words(Thatcher3_speeches)  # lemmatize words
 
-write.csv(Thatcher3_speeches, "data/Thatcher3_speeches.csv")
+write.csv(Thatcher3_speeches, "data/Thatcher3_speeches.csv")# export to csv for MALLET lda modelling
 
 #Major1_speeches
 #pre-processing
@@ -478,7 +477,8 @@ Major1_speeches <- gsub('[[:digit:]]+', '', Major1_speeches) #remove digits
 Major1_speeches <- tolower(Major1_speeches)  # force to lowercase
 Major1_speeches <- lemmatize_words(Major1_speeches)  # lemmatize words
 
-write.csv(Major1_speeches, "data/Major1_speeches.csv")
+write.csv(Major1_speeches, "data/Major1_speeches.csv") # export to csv for MALLET lda modelling
+
 #Major2_speeches
 #pre-processing
 Major2_speeches <- gsub("'","", Major2_speeches$speech)#remove apostrophes
@@ -489,7 +489,7 @@ Major2_speeches <- gsub('[[:digit:]]+', '', Major2_speeches) #remove digits
 Major2_speeches <- tolower(Major2_speeches)  # force to lowercase
 Major2_speeches <- lemmatize_words(Major2_speeches)  # lemmatize words
 
-write.csv(Major2_speeches, "data/Major2_speeches.csv")
+write.csv(Major2_speeches, "data/Major2_speeches.csv")# export to csv for MALLET lda modelling
 
 #Blair1_speeches
 #pre-processing
@@ -501,7 +501,7 @@ Blair1_speeches <- gsub('[[:digit:]]+', '', Blair1_speeches) #remove digits
 Blair1_speeches <- tolower(Blair1_speeches)  # force to lowercase
 Blair1_speeches <- lemmatize_words(Blair1_speeches)  # lemmatize words
 
-write.csv(Blair1_speeches, "data/Blair1_speeches.csv")
+write.csv(Blair1_speeches, "data/Blair1_speeches.csv")# export to csv for MALLET lda modelling
 
 #Blair2_speeches
 #pre-processing
@@ -513,7 +513,8 @@ Blair2_speeches <- gsub('[[:digit:]]+', '', Blair2_speeches) #remove digits
 Blair2_speeches <- tolower(Blair2_speeches)  # force to lowercase
 Blair2_speeches <- lemmatize_words(Blair2_speeches)  # lemmatize words
 
-write.csv(Blair2_speeches, "data/Blair2_speeches.csv")
+write.csv(Blair2_speeches, "data/Blair2_speeches.csv")# export to csv for MALLET lda modelling
+
 #Blair3_speeches
 #pre-processing
 Blair3_speeches <- gsub("'","", Blair3_speeches$speech)#remove apostrophes
@@ -524,7 +525,7 @@ Blair3_speeches <- gsub('[[:digit:]]+', '', Blair3_speeches) #remove digits
 Blair3_speeches <- tolower(Blair3_speeches)  # force to lowercase
 Blair3_speeches <- lemmatize_words(Blair3_speeches)  # lemmatize words
 
-write.csv(Blair3_speeches, "data/Blair3_speeches.csv")
+write.csv(Blair3_speeches, "data/Blair3_speeches.csv")# export to csv for MALLET lda modelling
 
 #Brown1_speeches
 #pre-processing
@@ -536,15 +537,6 @@ Brown1_speeches <- gsub('[[:digit:]]+', '', Brown1_speeches) #remove digits
 Brown1_speeches <- tolower(Brown1_speeches)  # force to lowercase
 Brown1_speeches <- lemmatize_words(Brown1_speeches)  # lemmatize words
 
-write.csv(Brown1_speeches, "data/Brown1_speeches.csv")
+write.csv(Brown1_speeches, "data/Brown1_speeches.csv")# export to csv for MALLET lda modelling
 
-prep.dataset <- function(x) {
-        x <- gsub("'","", x$speech)#remove apostrophes
-        x <- gsub("[[:punct:]]", " ", x)  # replace punctuation with space
-        x <- gsub("[[:cntrl:]]", " ", x)  # replace control characters with space
-        x <- gsub("[[:space:]]+$", "", x) # remove whitespace at end of documents
-        x <- gsub('[[:digit:]]+', '', x) #remove digits
-        x <- tolower(x)  # force to lowercase
-        x <- lemmatize_words(x)  # lemmatize words
-        
-}
+
